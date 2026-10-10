@@ -13,6 +13,7 @@ describe('Tab1Page', () => {
   });
 
   it('should create', () => {
+    component.decrement();
     expect(component).toBeTruthy();
   });
 });
