@@ -1,17 +1,24 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>CounterApp</ion-title>
+    <ion-title>CounterApp - Bonusy</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true" class="ion-padding">
+
+<app-counter
+    heading="Hlavní počítadlo"
+    (saved)="onSaved($event)"
+  ></app-counter>
+
   <app-counter
-    heading="Nové počítadlo"
+    heading="Rychlé počítadlo (od 10)"
+    [initialValue]="10"
     (saved)="onSaved($event)"
   ></app-counter>
 
   @if (savedCounters.length > 0) {
-    
+
     <ion-card class="summary-card">
       <ion-card-content class="ion-text-center">
         <p class="summary-label">Celkový součet všech počítadel</p>
@@ -20,6 +27,7 @@
     </ion-card>
 
     <ion-list>
+
       <ion-list-header>
         <ion-label>Uložená počítadla ({{ savedCounters.length }})</ion-label>
       </ion-list-header>

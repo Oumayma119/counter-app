@@ -1,4 +1,4 @@
-import { Component, input, output } from '@angular/core';
+import { Component, effect, input, output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import {
   IonButton,
@@ -26,10 +26,18 @@ import { SavedCounter } from '../../models/saved-counter';
 })
 export class CounterComponent {
   readonly heading = input('Nové počítadlo');
+  readonly initialValue = input<number>(0);
   readonly saved = output<SavedCounter>();
 
   counterName = '';
-  count = 0;
+  count = this.initialValue();
+
+  constructor() {
+
+    effect(() => {
+      this.count = this.initialValue();
+    });
+  }
 
   increment(): void {
     this.count++;
@@ -42,7 +50,7 @@ export class CounterComponent {
   }
 
   reset(): void {
-    this.count = 0;
+    this.count = this.initialValue();
   }
 
   save(): void {
@@ -59,6 +67,6 @@ export class CounterComponent {
     });
 
     this.counterName = '';
-    this.count = 0;
+    this.count = this.initialValue();
   }
 }
