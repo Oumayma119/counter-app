@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import {
   IonButton,
+  IonCard,
+  IonCardContent,
   IonContent,
   IonHeader,
   IonIcon,
@@ -24,6 +26,8 @@ import { SavedCounter } from '../models/saved-counter';
   imports: [
     CounterComponent,
     IonButton,
+    IonCard,
+    IonCardContent,
     IonContent,
     IonHeader,
     IonIcon,
@@ -38,6 +42,10 @@ import { SavedCounter } from '../models/saved-counter';
 })
 export class Tab1Page {
   savedCounters: SavedCounter[] = [];
+
+  get totalSum(): number {
+    return this.savedCounters.reduce((sum, counter) => sum + counter.value, 0);
+  }
 
   constructor() {
     addIcons({ trashOutline });

@@ -3,6 +3,25 @@ ion-list {
   margin: 1rem auto;
 }
 
+.summary-card {
+  max-width: 32rem;
+  margin: 1.5rem auto;
+  background: var(--ion-color-step-50, #f4f5f8);
+}
+
+.summary-label {
+  font-size: 0.9rem;
+  color: var(--ion-color-medium);
+  margin-bottom: 0.25rem;
+}
+
+.summary-value {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--ion-color-primary);
+  margin: 0;
+}
+
 ion-note {
   font-size: 1.5rem;
   font-weight: 700;

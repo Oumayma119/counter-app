@@ -11,6 +11,14 @@
   ></app-counter>
 
   @if (savedCounters.length > 0) {
+    
+    <ion-card class="summary-card">
+      <ion-card-content class="ion-text-center">
+        <p class="summary-label">Celkový součet všech počítadel</p>
+        <p class="summary-value">{{ totalSum }}</p>
+      </ion-card-content>
+    </ion-card>
+
     <ion-list>
       <ion-list-header>
         <ion-label>Uložená počítadla ({{ savedCounters.length }})</ion-label>
