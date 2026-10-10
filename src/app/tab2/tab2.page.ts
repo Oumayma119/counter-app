@@ -55,6 +55,8 @@ export class Tab2Page implements OnInit {
   searchQuery = '';
   sortBy: 'newest' | 'name' | 'value' = 'newest';
 
+  valueFilter: 'all' | 'positive' | 'negative' = 'all';   
+
   async ngOnInit(): Promise<void> {
     await this.counterService.initialize();
   }
@@ -67,10 +69,16 @@ export class Tab2Page implements OnInit {
       list = list.filter((c) => c.name.toLowerCase().includes(query));
     }
 
+    if (this.valueFilter === 'positive') {
+      list = list.filter((c) => c.value > 0);
+    } else if (this.valueFilter === 'negative') {
+      list = list.filter((c) => c.value < 0);
+    }
+
     if (this.sortBy === 'name') {
       list.sort((a, b) => a.name.localeCompare(b.name));
     } else if (this.sortBy === 'value') {
-      list.sort((a, b) => b.value - a.value); // highest value first
+      list.sort((a, b) => b.value - a.value); 
     } else {
       list.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
     }
