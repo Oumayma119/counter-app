@@ -21,3 +21,57 @@ ion-note {
   font-size: 1.25rem;
   font-weight: 700;
 }
+
+
+.controls-container,
+.summary-card,
+ion-list,
+
+.state-message {
+  max-width: 40rem;
+  margin: 1rem auto;
+}
+
+.sort-clear-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 0.5rem;
+  padding: 0 0.5rem;
+}
+
+.summary-card {
+  background: var(--ion-color-step-50, #f4f5f8);
+  border-radius: 8px;
+}
+
+.summary-label {
+  font-size: 0.9rem;
+  color: var(--ion-color-medium);
+  margin-bottom: 0.25rem;
+}
+
+.summary-value {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--ion-color-primary);
+  margin: 0;
+}
+
+.summary-count {
+  font-size: 0.8rem;
+  color: var(--ion-color-medium);
+  margin-top: 0.25rem;
+}
+
+.state-message {
+  color: var(--ion-color-medium);
+  text-align: center;
+  margin-top: 2rem;
+}
+
+ion-note {
+  font-size: 1.25rem;
+  font-weight: 700;
+}
