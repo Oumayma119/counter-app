@@ -1,6 +1,6 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>Odpočet do svátku</ion-title>
+    <ion-title>Odpočet do svátku & událostí</ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -8,56 +8,151 @@
   <div class="page-content">
     <section aria-labelledby="holidays-heading" [attr.aria-busy]="loading()">
       <h2 id="holidays-heading">Kolik dnů zbývá do…</h2>
-      <p>Vyberte český svátek a zobrazte počet zbývajících kalendářních dnů.</p>
 
-      <ion-button [disabled]="loading()" (click)="loadHolidays()">
-        {{ loading() ? 'Načítám…' : 'Načíst znovu' }}
-      </ion-button>
+      <!-- Category Switcher (Public, School, Custom) -->
+      <ion-segment [value]="category()" (ionChange)="onCategoryChange($any($event).detail.value)">        <ion-segment-button value="public">
+          <ion-label>Státní svátky</ion-label>
+        </ion-segment-button>
+        <ion-segment-button value="school">
+          <ion-label>Školní prázdniny</ion-label>
+        </ion-segment-button>
+        <ion-segment-button value="custom">
+          <ion-label>Vlastní datum</ion-label>
+        </ion-segment-button>
+      </ion-segment>
 
-      @if (loading()) {
-        <div class="state-message" role="status">
-          <ion-spinner aria-hidden="true"></ion-spinner>
-          <p>Načítám svátky…</p>
-        </div>
-      } @else if (errorMessage()) {
-        <p class="state-message error-message" role="alert">{{ errorMessage() }}</p>
-      } @else if (holidays().length === 0) {
-        <p class="state-message">Pro vybrané období nejsou žádné nadcházející svátky.</p>
-      } @else {
+      <!-- Offline / Cache Badge -->
+      @if (isCached()) {
+        <ion-badge color="warning" class="offline-badge">Uložená kopie (Offline)</ion-badge>
+      }
+
+      @if (category() !== 'custom') {
+        <!-- Country Selector -->
         <ion-select
-          label="Vyberte svátek"
+          label="Země"
           label-placement="stacked"
-          interface="alert"
-          cancel-text="Zrušit"
-          ok-text="Vybrat"
-          [value]="selectedId()"
-          (ionChange)="selectedId.set($event.detail.value)"
+          [value]="selectedCountry()"
+          (ionChange)="onCountryChange($any($event).detail.value)"
         >
-          @for (holiday of holidays(); track holiday.id) {
-            <ion-select-option [value]="holiday.id">
-              {{ holiday.startDate + 'T00:00:00Z' | date: 'd. M. y' : 'UTC' }} – {{ holidayName(holiday) }}
+          @for (c of countries(); track c.isoCode) {
+            <ion-select-option [value]="c.isoCode">
+              {{ c.isoCode }} - {{ c.name[0]?.text ?? c.isoCode }}
             </ion-select-option>
           }
         </ion-select>
 
-        @if (selectedHoliday(); as holiday) {
-          <ion-card>
-            <ion-card-header>
-              <ion-card-title>{{ holidayName(holiday) }}</ion-card-title>
-            </ion-card-header>
-            <ion-card-content>
-              <p>{{ holiday.startDate + 'T00:00:00Z' | date: 'd. M. y' : 'UTC' }}</p>
-              <div aria-live="polite">
-                <p class="countdown-value">{{ remainingDays() }}</p>
-                @if (remainingDays() === 0) {
-                  <p>Svátek je dnes!</p>
-                } @else {
-                  <p>Počet dnů do svátku</p>
+        <ion-button [disabled]="loading()" (click)="loadData()" class="reload-btn">
+          {{ loading() ? 'Načítám…' : 'Načíst znovu' }}
+        </ion-button>
+
+        @if (loading()) {
+          <div class="state-message" role="status">
+            <ion-spinner aria-hidden="true"></ion-spinner>
+            <p>Načítám data…</p>
+          </div>
+        } @else if (errorMessage() && !isCached()) {
+          <p class="state-message error-message" role="alert">{{ errorMessage() }}</p>
+        } @else if (holidays().length === 0) {
+          <p class="state-message">Pro vybranou zemi a období nejsou k dispozici žádné položky.</p>
+        } @else {
+          <ion-select
+            label="Vyberte položku"
+            label-placement="stacked"
+            interface="alert"
+            cancel-text="Zrušit"
+            ok-text="Vybrat"
+            [value]="selectedId()"
+            (ionChange)="onSelectionChange($event.detail.value)"
+          >
+            @for (h of holidays(); track h.id) {
+              <ion-select-option [value]="h.id">
+                {{ h.startDate + 'T00:00:00Z' | date: 'd. M. y' : 'UTC' }} – {{ holidayName(h) }}
+              </ion-select-option>
+            }
+          </ion-select>
+
+          @if (selectedHoliday(); as holiday) {
+            <ion-card>
+              <ion-card-header>
+                <ion-card-title>{{ holidayName(holiday) }}</ion-card-title>
+                @if (subdivisionNames(holiday)) {
+                  <p class="subdivision-note">Oblast: {{ subdivisionNames(holiday) }}</p>
                 }
-              </div>
-              <p>Počítáno k {{ today() + 'T00:00:00Z' | date: 'd. M. y' : 'UTC' }}.</p>
-            </ion-card-content>
-          </ion-card>
+              </ion-card-header>
+              <ion-card-content>
+                <p>{{ holiday.startDate + 'T00:00:00Z' | date: 'd. M. y' : 'UTC' }}</p>
+                <div aria-live="polite">
+                  <p class="countdown-value">{{ remainingDays() }}</p>
+                  @if (remainingDays() === 0) {
+                    <p>Dnes je ten den!</p>
+                  } @else {
+                    <p>Počet dnů zbývajících</p>
+                  }
+                </div>
+                <p class="today-note">Počítáno k {{ today() + 'T00:00:00Z' | date: 'd. M. y' : 'UTC' }}.</p>
+              </ion-card-content>
+            </ion-card>
+          }
+        }
+      } @else {
+        <!-- Custom Event Form -->
+        <ion-card class="custom-card">
+          <ion-card-header>
+            <ion-card-title>Přidat vlastní událost (např. Zkouška)</ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+            <ion-item>
+              <ion-label position="stacked">Název události</ion-label>
+              <ion-input [(ngModel)]="newCustomTitle" placeholder="např. Zkouška z AP5PM"></ion-input>
+            </ion-item>
+            <ion-item>
+              <ion-label position="stacked">Cílové datum</ion-label>
+              <ion-input type="date" [(ngModel)]="newCustomDate"></ion-input>
+            </ion-item>
+            <ion-button expand="block" (click)="addCustomEvent()" [disabled]="!newCustomTitle || !newCustomDate">
+              Uložit událost
+            </ion-button>
+          </ion-card-content>
+        </ion-card>
+
+        @if (customEvents().length > 0) {
+          <ion-select
+            label="Vyberte vlastní událost"
+            label-placement="stacked"
+            [value]="selectedId()"
+            (ionChange)="selectedId.set($event.detail.value)"
+          >
+            @for (ev of customEvents(); track ev.id) {
+              <ion-select-option [value]="ev.id">
+                {{ ev.targetDate + 'T00:00:00Z' | date: 'd. M. y' : 'UTC' }} – {{ ev.title }}
+              </ion-select-option>
+            }
+          </ion-select>
+
+          @if (selectedCustomEvent(); as custom) {
+            <ion-card>
+              <ion-card-header>
+                <ion-card-title>{{ custom.title }}</ion-card-title>
+              </ion-card-header>
+              <ion-card-content>
+                <p>{{ custom.targetDate + 'T00:00:00Z' | date: 'd. M. y' : 'UTC' }}</p>
+                <div aria-live="polite">
+                  <p class="countdown-value">{{ remainingDays() }}</p>
+                  @if (remainingDays() === 0) {
+                    <p>Dnes je ten den!</p>
+                  } @else {
+                    <p>Počet dnů do události</p>
+                  }
+                </div>
+                <p class="today-note">Počítáno k {{ today() + 'T00:00:00Z' | date: 'd. M. y' : 'UTC' }}.</p>
+                <ion-button color="danger" fill="clear" (click)="deleteCustomEvent(custom.id)">
+                  Smazat událost
+                </ion-button>
+              </ion-card-content>
+            </ion-card>
+          }
+        } @else {
+          <p class="state-message">Zatím nemáte žádné vlastní události.</p>
         }
       }
     </section>
