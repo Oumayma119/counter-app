@@ -7,7 +7,33 @@ section + section {
   margin-top: 2rem;
 }
 
+ion-segment {
+  margin-bottom: 1rem;
+}
+
 ion-select {
+  margin-top: 1rem;
+}
+
+.reload-btn {
+  margin-top: 1rem;
+}
+
+.offline-badge {
+  display: block;
+  margin: 0.5rem auto;
+  text-align: center;
+  font-size: 0.85rem;
+}
+
+.subdivision-note {
+  font-size: 0.9rem;
+  color: var(--ion-color-medium);
+}
+
+.today-note {
+  font-size: 0.85rem;
+  color: var(--ion-color-medium);
   margin-top: 1rem;
 }
 
@@ -36,4 +62,8 @@ ion-card-title {
 
 .error-message {
   color: var(--ion-color-danger);
+}
+
+.custom-card {
+  text-align: left;
 }
