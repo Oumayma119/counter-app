@@ -1,55 +1,48 @@
-.history-header,
-ion-list,
-.state-message {
-  max-width: 40rem;
-  margin: 1rem auto;
-}
-
-.history-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-}
-
-.state-message {
-  color: var(--ion-color-medium);
-  text-align: center;
-}
-
-ion-note {
-  font-size: 1.25rem;
-  font-weight: 700;
-}
-
-
+// Same width and left/right edge for all main blocks
 .controls-container,
 .summary-card,
-ion-list,
-
+.history-list,
 .state-message {
   max-width: 40rem;
   margin: 1rem auto;
 }
 
-.sort-clear-row {
+.controls-container {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-  margin-top: 0.5rem;
-  padding: 0 0.5rem;
+  flex-direction: column;
+  gap: 0.75rem;
 }
 
+ion-searchbar {
+  padding: 0;
+}
+
+.filters {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+
+  ion-select {
+    width: 100%;
+    min-width: 0; // prevents overflow off the screen
+  }
+}
+
+.clear-button {
+  margin: 0;
+}
+
+// Summary card
 .summary-card {
   background: var(--ion-color-step-50, #f4f5f8);
   border-radius: 8px;
+  box-shadow: none;
 }
 
 .summary-label {
   font-size: 0.9rem;
   color: var(--ion-color-medium);
-  margin-bottom: 0.25rem;
+  margin: 0 0 0.25rem;
 }
 
 .summary-value {
@@ -62,16 +55,31 @@ ion-list,
 .summary-count {
   font-size: 0.8rem;
   color: var(--ion-color-medium);
-  margin-top: 0.25rem;
+  margin: 0.25rem 0 0;
 }
 
-.state-message {
-  color: var(--ion-color-medium);
-  text-align: center;
-  margin-top: 2rem;
+// History list
+.history-list {
+  padding: 0;
+
+  ion-item {
+    --padding-start: 0;
+    --inner-padding-end: 0;
+  }
 }
 
 ion-note {
   font-size: 1.25rem;
   font-weight: 700;
+}
+
+// Loading / empty states
+.state-message {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 2rem;
+  color: var(--ion-color-medium);
+  text-align: center;
 }

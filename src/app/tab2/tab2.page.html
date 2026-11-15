@@ -22,26 +22,44 @@
         animated="true"
       ></ion-searchbar>
 
-      <div class="sort-clear-row">
-        
+      <div class="filters">
         <!-- Varianta D: Filter Dropdown -->
-        <ion-select [(ngModel)]="valueFilter" label="Filtr" interface="popover" fill="outline">
+        <ion-select
+          [(ngModel)]="valueFilter"
+          label="Filtr"
+          labelPlacement="stacked"
+          interface="popover"
+          fill="outline"
+        >
           <ion-select-option value="all">Všechny</ion-select-option>
           <ion-select-option value="positive">Kladné (> 0)</ion-select-option>
           <ion-select-option value="negative">Záporné (< 0)</ion-select-option>
         </ion-select>
 
         <!-- Sorting Dropdown -->
-        <ion-select [(ngModel)]="sortBy" label="Řadit podle" interface="popover" fill="outline">
+        <ion-select
+          [(ngModel)]="sortBy"
+          label="Řadit podle"
+          labelPlacement="stacked"
+          interface="popover"
+          fill="outline"
+        >
           <ion-select-option value="newest">Od nejnovějších</ion-select-option>
           <ion-select-option value="name">Podle názvu (A-Z)</ion-select-option>
           <ion-select-option value="value">Podle hodnoty</ion-select-option>
         </ion-select>
-
-        <ion-button color="danger" fill="outline" size="small" (click)="confirmClear()">
-          Vymazat vše
-        </ion-button>
       </div>
+
+      <ion-button
+        class="clear-button"
+        color="danger"
+        fill="outline"
+        size="small"
+        expand="block"
+        (click)="confirmClear()"
+      >
+        Vymazat vše
+      </ion-button>
     </div>
 
     <!-- Summary Card -->
@@ -56,7 +74,7 @@
     @if (filteredCounters.length === 0) {
       <p class="state-message">Žádné záznamy neodpovídají zvolenému filtru.</p>
     } @else {
-      <ion-list>
+      <ion-list class="history-list">
         @for (counter of filteredCounters; track counter.id) {
           <ion-item>
             <ion-label>
