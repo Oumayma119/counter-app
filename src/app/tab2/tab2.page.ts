@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import {
@@ -20,7 +20,7 @@ import {
   IonToolbar,
   ToastController,
 } from '@ionic/angular';
-import { CounterService } from '../services/counter.service';
+import { FirebaseCounterService } from '../services/firebase-counter.service';
 import { FirebaseAuthService } from '../services/firebase-auth.service';
 import { SavedCounter } from '../models/saved-counter';
 
@@ -49,9 +49,8 @@ import { SavedCounter } from '../models/saved-counter';
   ],
 })
 export class Tab2Page implements OnInit {
-  readonly counterService = inject(CounterService);
+  readonly counterService = inject(FirebaseCounterService);
   readonly auth = inject(FirebaseAuthService);
-  readonly authError = signal('');
 
   private readonly alertController = inject(AlertController);
   private readonly toastController = inject(ToastController);
@@ -62,13 +61,6 @@ export class Tab2Page implements OnInit {
 
   async ngOnInit(): Promise<void> {
     await this.counterService.initialize();
-
-    try {
-      await this.auth.initialize();
-    } catch (error) {
-      console.error(error);
-      this.authError.set('Přihlášení se nezdařilo. Zkontrolujte konfiguraci.');
-    }
   }
 
   get filteredCounters(): SavedCounter[] {
